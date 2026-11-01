@@ -87,3 +87,9 @@ This bundle neither creates nor publishes a GitHub repository. Daily meaningful
 commit messages are provided in the handbook. No ROS 2 or autopilot stack has yet
 been chosen or installed.
 
+
+
+## Learner progress
+
+As of **1 November 2026**, the learner reports completing all Day 1 activities in the handbook. See [the milestone tracker](docs/milestones.md) and [Day 1 progress record](docs/day01_progress.md). The companion source files are present; sync the learner-generated Simulink model, plot, and MAT-file from the MATLAB computer to complete the repository evidence.
+
