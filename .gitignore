@@ -1,0 +1,8 @@
+slprj/
+*.slxc
+*.asv
+*.autosave
+*.slx.r*
+__pycache__/
+.DS_Store
+
