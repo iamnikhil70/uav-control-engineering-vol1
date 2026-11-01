@@ -11,7 +11,7 @@ subplot(3,1,1); plot(t,a,'LineWidth',1.5); grid on;
 title('Prescribed constant acceleration');
 xlabel('Time (s)'); ylabel('a (m/s^2)');
 subplot(3,1,2); plot(t,v,'LineWidth',1.5); grid on;
-title('Velocity accumulates accelerastion');
+title('Velocity accumulates acceleration');
 xlabel('Time (s)'); ylabel('v (m/s)');
 subplot(3,1,3); plot(t,z,'LineWidth',1.5); grid on;
 title('Altitude accumulates velocity');
