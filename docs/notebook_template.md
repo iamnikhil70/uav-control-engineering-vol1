@@ -1,6 +1,6 @@
 # Engineering notebook entry
 
-Copy one entry into `docs/notebook.md` per actual experiment.
+Copy this template as `docs/notebook_dXX.md` for each day (for example, `docs/notebook_d02.md`). Keep observed results specific to your own run.
 
 - Experiment identifier and date:
 - Objective and question:
