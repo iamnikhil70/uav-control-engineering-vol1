@@ -1,8 +1,8 @@
 # Day 1 progress — Mathematical language and the first moving model
 
 **Handbook:** UAV Control Engineering, Volume 1, Day 1, printed pages 7–14.  
-**Learning status:** Completed by learner, reported 1 November 2026.  
-**Code source:** Companion bundle's `matlab/day01_kinematics.m` and `config/volume1_parameters.m`.
+**Learning status:** Completed by learner.  
+**Code source:** Companion bundle's matlab/day01_kinematics.m and config/volume1_parameters.m.
 
 ## 1. Learning objectives
 
@@ -20,30 +20,24 @@ The vertical coordinate is positive upward.
 
 | Symbol | Meaning | Unit |
 |---|---|---|
-| (t) | Time | s |
-| (z(t)) | Altitude relative to a fixed datum | m |
-| (v(t)=\dot z(t)) | Upward vertical velocity | m/s |
-| (a(t)=\ddot z(t)) | Upward vertical acceleration | m/s² |
-| (z_0=z(0)) | Initial altitude | m |
-| (v_0=v(0)) | Initial vertical velocity | m/s |
+| t | Time | s |
+| z(t) | Altitude relative to a fixed datum | m |
+| v(t) = ż(t) | Upward vertical velocity | m/s |
+| a(t) = z̈(t) | Upward vertical acceleration | m/s² |
+| z0 = z(0) | Initial altitude | m |
+| v0 = v(0) | Initial vertical velocity | m/s |
 
 For the Day 1 exercise, acceleration is prescribed as a constant:
 
-```math
-a(t)=a_0
-```
+a(t) = a0
 
-Integrating once and applying (v(0)=v_0):
+Integrating once and applying v(0) = v0:
 
-```math
-v(t)=v_0+a_0t
-```
+v(t) = v0 + a0t
 
-Integrating again and applying (z(0)=z_0):
+Integrating again and applying z(0) = z0:
 
-```math
-z(t)=z_0+v_0t+\frac{1}{2}a_0t^2
-```
+z(t) = z0 + v0t + ½a0t²
 
 The model is second order in altitude and therefore requires two scalar initial conditions. The integrator outputs retain accumulated input history.
 
@@ -51,16 +45,14 @@ The model is second order in altitude and therefore requires two scalar initial 
 
 | Parameter | Value |
 |---|---:|
-| (z_0) | 0 m |
-| (v_0) | 0 m/s |
-| (a_0) | 0.2 m/s² |
-| Time vector | (0:0.01:4) s |
+| z0 | 0 m |
+| v0 | 0 m/s |
+| a0 | 0.2 m/s² |
+| Time vector | 0:0.01:4 s |
 
 With these values:
 
-```math
-a(t)=0.2,\quad v(t)=0.2t,\quad z(t)=0.1t^2
-```
+a(t) = 0.2, v(t) = 0.2t, z(t) = 0.1t²
 
 | Time | Acceleration | Velocity | Altitude |
 |---:|---:|---:|---:|
@@ -68,54 +60,51 @@ a(t)=0.2,\quad v(t)=0.2t,\quad z(t)=0.1t^2
 | 2 s | 0.2 m/s² | 0.4 m/s | 0.4 m |
 | 4 s | 0.2 m/s² | 0.8 m/s | 1.6 m |
 
-These are analytical reference checkpoints. The learner's own measured MATLAB/Simulink values belong in the engineering notebook and result files.
+These are analytical reference checkpoints. The learner's actual observations are recorded in docs/notebook_d01.md.
 
 ## 4. MATLAB implementation
 
 Run the project setup from the repository root:
 
-```matlab
-startup_volume1
-day01_kinematics
-```
+    startup_volume1
+    day01_kinematics
 
 Relevant files:
 
-- `startup_volume1.m` — adds project paths and creates student-output folders.
-- `config/volume1_parameters.m` — baseline parameter structure.
-- `matlab/day01_kinematics.m` — computes (a(t)), (v(t)), and (z(t)), checks the terminal altitude, exports a three-panel plot, and saves a MAT-file.
+- startup_volume1.m — adds project paths and creates student-output folders.
+- config/volume1_parameters.m — baseline parameter structure.
+- matlab/day01_kinematics.m — computes acceleration, velocity, and altitude, checks the terminal altitude, exports a three-panel plot, and saves a MAT file.
 
 MATLAB implementation details worth retaining:
 
-- `t` is a column vector.
-- `t.^2` squares each time-vector element; `t^2` would request matrix power.
-- `ones(size(t))` creates a constant acceleration vector with matching dimensions.
+- t is a column vector.
+- t.^2 squares each time-vector element; t^2 would request matrix power.
+- ones(size(t)) creates a constant acceleration vector with matching dimensions.
 - The assertion checks the hand-derived terminal altitude.
 - The plot labels include units; acceleration, velocity, and altitude are shown separately because they have different units.
 
 ## 5. Simulink implementation
 
-Build and save `simulink/day01_kinematics.slx`.
+The committed learner model is simulink/day01_kinematics.slx.
 
-```text
-Constant: 0.2 m/s^2
-        |--------------------------> Acceleration Scope
-        |
-        v
-Integrator: IC = v0 = 0
-        |--------------------------> Velocity Scope
-        |
-        v
-Integrator: IC = z0 = 0
-        |--------------------------> Altitude Scope
-```
+The model uses this signal chain:
 
-Solver settings from the handbook:
+    Constant: 0.2 m/s^2
+            |
+            v
+    Integrator: IC = v0 = 0  -> Velocity
+            |
+            v
+    Integrator: IC = z0 = 0  -> Altitude
+
+The acceleration, velocity, and altitude signals are observed separately.
+
+Solver settings recorded in the notebook:
 
 - Start time: 0 s
 - Stop time: 4 s
 - Variable-step solver
-- Solver: `ode45`
+- Solver: ode45
 - Maximum step size: 0.01 s
 
 The first Integrator's output is velocity, not altitude. The second Integrator's output is altitude. The initial condition of an Integrator is its initial output.
@@ -131,12 +120,15 @@ The first Integrator's output is velocity, not altitude. The second Integrator's
 
 ## 7. Completion and evidence
 
-The learner reports completing the Day 1 lesson, MATLAB activity, Simulink activity, and associated checks.
+The learner reports completing the Day 1 lesson, MATLAB activity, Simulink activity, and associated checks. The Day 1 notebook records terminal values of 1.6000 m and 0.8000 m/s, a passed MATLAB assertion, and Simulink scope verification.
 
-Source files are already present in this repository. The following generated learner artifacts should be committed from the local MATLAB project so the work is reproducible and inspectable:
+Committed learner evidence:
 
-- `simulink/day01_kinematics.slx`
-- `figures/student/day01_kinematics.png`
-- `results/day01.mat`
+- simulink/day01_kinematics.slx
+- figures/student/day01_kinematics.png
+- results/day01.mat
+- docs/notebook_d01.md
+
+The exact MATLAB release and installed toolbox versions are not yet recorded in the notebook.
 
 Do not label the real UAV as validated from this exercise. Day 1 prescribes acceleration directly and does not yet model thrust, gravity, motors, sensors, or feedback control.
