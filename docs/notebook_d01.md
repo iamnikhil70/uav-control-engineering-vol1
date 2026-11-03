@@ -1,0 +1,24 @@
+# Engineering notebook entry
+
+- Experiment identifier and date: Day 1: Vertical Kinematics and First Integrator Model (2026-11-03)
+- Objective and question: Understand vertical kinematics, verify constant acceleration in MATLAB, and implement a two-integrator physical memory model in Simulink.
+- Script/model path and Git commit: `matlab/day01_kinematics.m`, `simulink/day01_kinematics.slx`, Commit: Pending
+- MATLAB release and installed toolboxes: MATLAB / Simulink
+- Equation, state order, input/output units, and sign convention: $\dot{z} = v$, $\dot{v} = a_0$; 2nd order system; acceleration in $\text{m/s}^2$, position in meters, velocity in $\text{m/s}$; positive upward.
+- Assumptions and validity boundary: Constant acceleration ($a_0 = 0.2 \text{ m/s}^2$), zero drag, ideal continuous-time integration.
+- Parameters and force history: $a_0 = 0.2 \text{ m/s}^2$, constant step input over $4\text{ s}$.
+- Initial conditions and time horizon: $z(0) = 0\text{ m}$, $v(0) = 0\text{ m/s}$; time horizon $t = [0, 4]\text{ s}$.
+- Solver, tolerances, maximum step, input interpolation, and logging: Variable-step solver (`ode45`), max step size $0.01\text{ s}$.
+- Prediction written BEFORE running: Velocity at $4\text{ s} = 0.8\text{ m/s}$, Altitude at $4\text{ s} = 1.6\text{ m}$.
+- Independent analytical checkpoints: $v(4) = 0 + (0.2)(4) = 0.8\text{ m/s}$; $z(4) = \frac{1}{2}(0.2)(4^2) = 1.6\text{ m}$.
+- Actual numerical observations: Final position $z(\text{end}) = 1.6000\text{ m}$, final velocity $v(\text{end}) = 0.8000\text{ m/s}$.
+- Plot and data filenames: `figures/student/day01_kinematics.png`, `results/day01.mat`
+- Verification metric and predefined threshold: `assert(abs(z(end) - 1.6) < 1e-4)`
+- Actual maximum position error (m): $< 10^{-6}$ (exact match within floating-point tolerance)
+- Actual maximum velocity error (m/s), if checked: $< 10^{-6}$
+- Pass/fail/pending and evidence: Pass. MATLAB assertion passed and Simulink scopes verified.
+- Discrepancy and a test to isolate its cause: None.
+- Repair and rerun result, if applicable: N/A.
+- Conclusion supported by the evidence: Cascaded integrators accurately accumulate acceleration into velocity and position over time, matching analytical kinematics.
+- What remains unvalidated: External disturbances, aerodynamic drag, and actuator saturation.
+- Next justified action: Transition to Day 2: Frames, forces, and hover.
