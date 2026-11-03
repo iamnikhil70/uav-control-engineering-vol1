@@ -1,95 +1,135 @@
-# UAV Control Engineering Volume 1 companion
+# UAV Control Engineering — Volume 1
 
-This project supports the seven-day handbook on ideal vertical UAV dynamics.
-The physical input is a thrust increment in newtons, not throttle or rotor speed.
-Upward altitude is positive. The state order is `[z; v]`.
+A hands-on learning and implementation repository for building an ideal vertical UAV model from first principles using MATLAB and Simulink.
 
-## Requirements and execution status
+The goal is to understand the physics, derive the equations, implement the model, verify it against analytical results, and preserve the work as reproducible engineering evidence.
 
-MATLAB, Simulink, and Control System Toolbox are required for all labs.
-Days 1–3 and the optional concept plots use base MATLAB for numerical work.
-Official MathWorks interfaces were reviewed on 2026-10-05.
-No MATLAB or Simulink runtime was available during authorship. The `.m` source
-and model builder have not been executed in those products. See
-`docs/reference_validation.md` for independently executed mathematical and
-SciPy numerical checks. These do not establish native MATLAB/Simulink compatibility.
-Run the acceptance checks below on your installation.
+## Current learning status
 
-## Start
+| Day | Handbook topic | Learner status | Repository evidence |
+|---:|---|---|---|
+| 1 | Mathematical language and the first moving model | **Completed** | MATLAB script, Simulink model, plot, MAT result, and engineering notebook are committed |
+| 2 | Frames, forces, and hover | **In progress — current focus** | Companion MATLAB script is present; complete the Day 2 exercises and record the results |
+| 3 | Operating points, deviations, and numerical integration | Not started | Companion source is included |
+| 4 | Laplace transforms and the double integrator | Not started | Companion source is included |
+| 5 | Equivalent Simulink representations | Not started | Companion source and optional model builder are included |
+| 6 | States, matrices, and initial motion | Not started | Companion source is included |
+| 7 | Independent vertical-plant experiment | Not started | Companion source and helper functions are included |
 
-1. Extract the whole folder. Set MATLAB Current Folder to this folder.
-2. Run `startup_volume1`. Record the printed release and toolbox list.
-3. Read the day's theory, make predictions, and derive checkpoints by hand.
-4. Run the corresponding daily script by name in MATLAB.
-5. Construct the Simulink model manually using the handbook.
-6. Record actual results and discrepancies before committing your work.
+**Important:** MATLAB scripts and reference files for Days 2–7 are included as part of the Volume 1 companion bundle. Their presence in this repository does not mean those lessons have been completed or independently verified by the learner.
 
-Do not use `clear all` halfway through a lab: it removes setup variables such as
-`project_root`, `figure_dir`, and `result_dir`. Rerun startup if needed.
+See [the milestone tracker](docs/milestones.md), [Day 1 progress record](docs/day01_progress.md), and [Day 1 engineering notebook](docs/notebook_d01.md).
 
-## Daily run order
+## What this repository contains
 
-| Day | MATLAB command | Simulink model you create |
-|---|---|---|
-| 1 | `day01_kinematics` | `day01_kinematics.slx` |
-| 2 | `day02_forces` | `day02_total_thrust.slx` |
-| 3 | `day03_ode` | `day03_absolute_vs_delta.slx` |
-| 4 | `day04_transfer_function` | `day04_transfer_function.slx` |
-| 5 | `day05_compare_models` after building the model | `v1_equivalent.slx` |
-| 6 | `day06_state_space` | `day06_initial_state.slx` |
-| 7 | `day07_weekly_experiment` after building the model | `v1_weekly.slx` |
+- **MATLAB source:** daily scripts for Days 1–7 and supporting functions.
+- **Simulink:** the completed Day 1 model and an optional builder for later comparison models.
+- **Configuration:** the shared ideal-plant baseline parameters.
+- **Documentation:** lesson progress, engineering notebook, report template, continuity record, and handbook source text.
+- **Experiments:** verification plan and independent reference calculations.
+- **Figures:** instructional reference figures and learner-generated figures.
+- **Results:** saved numerical output from completed experiments.
 
-`plot_weekly_profile` reproduces the weekly four-signal figure.
-`make_concept_figures` produces the local-linearization, Euler-error, derivative,
-and pole-location illustrations. Review its comments before running.
+## Repository layout
 
-## Optional reference model builder
+    config/                 Shared Volume 1 parameters
+    docs/                   Progress, notebook, templates, handbook text
+    experiments/            Verification plan and reference checks
+    figures/reference/      Instructional reference illustrations
+    figures/student/        Learner-generated plots
+    matlab/                 Daily MATLAB scripts and helper functions
+    results/                Saved MAT and CSV experiment results
+    simulink/               Simulink models and optional model builder
+    startup_volume1.m       Project setup script
 
-After trying manual construction, run `build_volume1_models` from MATLAB.
-It creates **new** `v1_equivalent.slx` and `v1_weekly.slx` files under `simulink`.
-It skips an existing or open model rather than overwriting it.
-No generated `.slx` binaries are supplied as tested artifacts in this bundle.
+The reference illustrations in figures/reference are teaching material, not measurements from a physical UAV. Learner-generated evidence belongs in figures/student and results.
 
-The builder stores defaults in the model workspace. The daily comparison scripts
-use `SimulationInput.setVariable(...,'Workspace',modelname)` to override those
-values for each run. Merely changing base-workspace `m` will not override a model
-workspace value. If block parameter names differ in an older release, construct
-the model manually and use installed block Help. Current Step documentation names
-the programmatic level parameters `InitialValue` and `FinalValue`; older releases
-may expose `Before` and `After`. Record any adaptation in your notebook.
+## Day 1 — completed
 
-## Acceptance checks
+Day 1 introduced vertical kinematics with upward-positive altitude:
 
-- Day 1: z(4 s) = 1.6 m under a = 0.2 m/s² from rest.
-- Day 3: ODE position and velocity match the analytical solution within 1e-7
-  in their respective SI units over the simple baseline test.
-- Day 4: the 0.4 N step at 1 s gives z(6 s) = 2.5 m for 2 kg.
-- Day 5: all three position branches agree with the reference to within 1e-5 m.
-- Day 6: z(t) = 1 + 0.3 t and v(t) = 0.3 with zero increment.
-- Day 7: +0.4 N from 1–3 s and -0.4 N from 3–5 s gives final z = 0.8 m,
-  v = 0 for 2 kg; the final altitudes for 1 and 4 kg are 1.6 and 0.4 m.
-- All Day 7 position residual checks must be finite and below 1e-5 m.
+- Acceleration: a(t) = a0
+- Velocity: v(t) = v0 + a0 t
+- Altitude: z(t) = z0 + v0 t + ½ a0 t²
 
-These are numerical implementation checks, not claims about real-aircraft accuracy.
-Scripts intentionally stop on failed assertions. Diagnose input, mass, units,
-initial conditions, and logging before changing solver tolerances.
+For the baseline exercise, z0 = 0 m, v0 = 0 m/s, and a0 = 0.2 m/s² over 4 seconds. The analytical terminal values are v(4) = 0.8 m/s and z(4) = 1.6 m.
 
-## Outputs and documents
+Committed Day 1 evidence:
 
-Your runs create `results` and `figures/student`. Reference illustrations live in
-`figures/reference` and are labelled instructional, not student measurements.
-Use `docs/notebook_template.md` and `docs/week1_report_template.md` for your own
-evidence. `docs/MASTER_CONTINUITY_RECORD.md` is the handoff to later volumes;
-update its learner-status fields honestly. The source manuscript is included as
-`docs/handbook_source.md` for searching and annotation.
+- MATLAB source: matlab/day01_kinematics.m
+- Simulink model: simulink/day01_kinematics.slx
+- Learner plot: figures/student/day01_kinematics.png
+- Saved data: results/day01.mat
+- Run notes: docs/notebook_d01.md
 
-This bundle neither creates nor publishes a GitHub repository. Daily meaningful
-commit messages are provided in the handbook. No ROS 2 or autopilot stack has yet
-been chosen or installed.
+The notebook records the learner's reported MATLAB assertion and Simulink scope checks. The exact MATLAB release and installed toolbox versions still need to be recorded.
 
+## Start the project
 
+1. Open MATLAB.
+2. Set the Current Folder to the repository root.
+3. Run the startup script once:
 
-## Learner progress
+    startup_volume1
 
-As of **1 November 2026**, the learner reports completing all Day 1 activities in the handbook. See [the milestone tracker](docs/milestones.md) and [Day 1 progress record](docs/day01_progress.md). The companion source files are present; sync the learner-generated Simulink model, plot, and MAT-file from the MATLAB computer to complete the repository evidence.
+This adds the configuration, MATLAB, and Simulink folders to the MATLAB path, prints the MATLAB release and installed products, and creates the student figure and result folders.
 
+To rerun Day 1:
+
+    day01_kinematics
+
+To begin the current lesson, Day 2:
+
+    day02_forces
+
+Follow the handbook in order. Make predictions and derive the expected values before running the script or inspecting the output.
+
+## Daily MATLAB scripts
+
+| Day | Command | Purpose |
+|---:|---|---|
+| 1 | day01_kinematics | Constant-acceleration kinematics |
+| 2 | day02_forces | Total thrust, weight, and hover |
+| 3 | day03_ode | Total-thrust and deviation-form ODEs |
+| 4 | day04_transfer_function | Transfer function, poles, and response interpretation |
+| 5 | day05_compare_models | Compare Integrator, Transfer Fcn, and State-Space models |
+| 6 | day06_state_space | Physical states and nonzero initial conditions |
+| 7 | day07_weekly_experiment | Piecewise thrust input and mass-sweep verification |
+
+Days 5 and 7 require the corresponding Simulink models to be built first. The optional builder is simulink/build_volume1_models.m; read its comments and follow the handbook's manual-build exercise before using it.
+
+Other helper scripts include make_concept_figures, plot_weekly_profile, piecewise_ode, and pulse_reference. They support later lessons and are not separate learner milestones.
+
+## Software requirements
+
+- **MATLAB:** required for the daily numerical scripts.
+- **Simulink:** required for the block-diagram exercises and Simulink model comparisons.
+- **Control System Toolbox:** required for the transfer-function and state-space workflows used in later days.
+- **Python 3 with NumPy and SciPy:** optional; used only for the independent reference-check script in experiments.
+
+The startup script prints the installed MATLAB release and products. Record the exact versions in your engineering notebook rather than assuming that every MATLAB release exposes identical block parameters or interfaces.
+
+## Modeling conventions
+
+- The vertical coordinate z is positive upward.
+- v = dz/dt and a = dv/dt.
+- The physical state order used later in Volume 1 is x = [z; v].
+- Total thrust T is measured in newtons and acts upward.
+- Hover thrust is T0 = mg.
+- The signed thrust increment is ΔT = T − mg, so the ideal vertical plant is m z̈ = ΔT.
+
+Keep total thrust and thrust increment distinct. The input used in the deviation model is a force in newtons, not normalized throttle or rotor speed.
+
+## Verification and limitations
+
+The repository includes analytical reference checks and independent Python numerical validation. Those checks do not establish that every MATLAB script or Simulink model has been executed successfully on every MATLAB release.
+
+Day 1 learner evidence is recorded separately in docs/notebook_d01.md. Complete the remaining native MATLAB and Simulink checks as each lesson is studied.
+
+This is an **ideal vertical-plant learning project**, not a validated aircraft model. It does not yet establish real vehicle mass or thrust data, actuator dynamics, aerodynamic drag, attitude coupling, sensor behavior, closed-loop controller performance, or flight readiness. ROS 2, Gazebo, PX4/ArduPilot SITL, LQR, and MPC are later-stage topics, not completed components of this Volume 1 repository.
+
+## Keeping the repository clean
+
+Commit learner-generated plots, models, and numerical results when they provide reproducible evidence. Do not commit temporary Simulink build folders, autosave files, or editor backups; the existing .gitignore excludes common temporary files.
+
+Do not mark a day complete merely because its companion script or reference figure is present. Update docs/milestones.md and the engineering notebook only after completing the lesson and its checks.
