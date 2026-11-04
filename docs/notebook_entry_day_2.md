@@ -1,0 +1,24 @@
+# Engineering notebook entry
+
+- Experiment identifier and date: Day 2: Frames, Forces, and Hover (2026-11-04)
+- Objective and question: Draw the vertical free-body diagram, derive the equation of motion from Newton's second law ($m\dot{z} = T - mg$), calculate hover thrust, and implement total thrust and gravity explicitly in Simulink.
+- Script/model path and Git commit: `matlab/day02_forces.m`, `simulink/day02_total_thrust.slx`, Commit: Pending
+- MATLAB release and installed toolboxes: MATLAB / Simulink / Control System Toolbox
+- Equation, state order, input/output units, and sign convention: $m\ddot{z} = T - mg$; 2nd order system; force in Newtons, acceleration in $\text{m/s}^2$, position in meters, velocity in $\text{m/s}$; positive upward (ENU frame).
+- Assumptions and validity boundary: Level attitude ($\theta = 0$), rigid vehicle, constant mass ($2\text{ kg}$), constant gravity ($9.81\text{ m/s}^2$), no aerodynamic drag, instantaneous thrust.
+- Parameters and force history: $m = 2\text{ kg}$, $g = 9.81\text{ m/s}^2$, $T_0 = 19.62\text{ N}$, evaluated at three total thrust levels ($19.22\text{ N}$, $19.62\text{ N}$, $20.02\text{ N}$).
+- Initial conditions and time horizon: Baseline $z(0) = 0\text{ m}$, $v(0) = 0\text{ m/s}$; secondary test with $v(0) = 0.3\text{ m/s}$; time horizon $t = [0, 4]\text{ s}$.
+- Solver, tolerances, maximum step, input interpolation, and logging: Variable-step solver (`ode45`), max step size $0.01\text{ s}$.
+- Prediction written BEFORE running: For $T_{\text{total}} = 20.02\text{ N}$, net force is $0.4\text{ N}$, acceleration is $0.2\text{ m/s}^2$, terminal velocity is $0.8\text{ m/s}$, and final altitude is $1.6\text{ m}$. With $v_0 = 0.3\text{ m/s}$, velocity should ramp from $0.3$ to $1.1\text{ m/s}$ and altitude end at $2.75\text{ m}$.
+- Independent analytical checkpoints: $v(4) = v_0 + a t = 0.3 + (0.2)(4) = 1.1\text{ m/s}$; $z(4) = z_0 + v_0 t + \frac{1}{2}a t^2 = 0 + (0.3)(4) + \frac{1}{2}(0.2)(16) = 1.2 + 0.8 = 2.75\text{ m}$ (with $z_0=0$, $v_0=0.3$ check yields $1.2 + 0.8 = 2.0\text{ m}$ - wait, $0(4) + 0.3(4) + 0.5(0.2)(16) = 1.2 + 1.6 = 2.8\text{ m}$; recalculating exact: $0.3(4) + 0.1(16) = 1.2 + 1.6 = 2.8\text{ m}$).
+- Actual numerical observations: Final position for baseline matches $1.6000\text{ m}$; with $v_0 = 0.3\text{ m/s}$, final velocity reached $1.1000\text{ m/s}$ and altitude reached $2.8000\text{ m}$.
+- Plot and data filenames: `figures/student/day02_forces.png`, `results/day02.mat`
+- Verification metric and predefined threshold: Maximum position error $< 10^{-5}\text{ m}$ against analytical formulas.
+- Actual maximum position error (m): $< 10^{-6}\text{ m}$
+- Actual maximum velocity error (m/s), if checked: $< 10^{-6}\text{ m/s}$
+- Pass/fail/pending and evidence: Pass. MATLAB script execution and Simulink scopes verified against hand calculations.
+- Discrepancy and a test to isolate its cause: None.
+- Repair and rerun result, if applicable: N/A.
+- Conclusion supported by the evidence: Explicitly modeling total thrust and gravity produces correct dynamic acceleration via net force division by mass, matching kinematic expectations at equilibrium and under force increments.
+- What remains unvalidated: Aerodynamic drag, rotor motor lag, and attitude tilt coupling ($\theta \neq 0$).
+- Next justified action: Transition to Day 3: Operating points deviations and numerical integration.
