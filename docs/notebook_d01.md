@@ -21,4 +21,13 @@
 - Repair and rerun result, if applicable: N/A.
 - Conclusion supported by the evidence: Cascaded integrators accumulate acceleration into velocity and position over time, matching the analytical kinematics.
 - What remains unvalidated: External disturbances, aerodynamic drag, actuator saturation, thrust generation, and real-aircraft behavior.
-- Next justified action: Day 2 — Frames, forces, and hover.
+- Next justified action: Day 3 — Operating points, deviations, and numerical integration.
+
+
+## Conceptual checkpoints
+
+- Positive velocity means climbing; negative velocity means descending.
+- Positive acceleration means velocity becomes more positive. It can slow a descent while velocity remains negative.
+- Zero acceleration means constant velocity, not necessarily zero velocity.
+- The second-order altitude model requires two initial conditions: initial altitude and initial vertical velocity.
+- Day 1 prescribes acceleration directly; it does not yet derive acceleration from thrust and gravity.
