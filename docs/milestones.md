@@ -6,8 +6,8 @@ This is the high-level status index. The daily engineering notebooks are the aut
 |---:|---|---|---|---|
 | 1 | Mathematical language and the first moving model | **Completed** | [notebook_d01.md](notebook_d01.md) | MATLAB script, Simulink model, plot, and MAT result |
 | 2 | Frames, forces, and hover | **Completed** | [notebook_d02.md](notebook_d02.md) | MATLAB script, plot, and MAT result; Simulink model verified locally but not committed |
-| 3 | Operating points, deviations, and numerical integration | **Next** | To be created after the lesson | Companion source is present; learner completion not yet recorded |
-| 4 | Laplace transforms and the double integrator | Not started | To be created after the lesson | Companion source is present |
+| 3 | Operating points, deviations, and numerical integration | **Completed** | [notebook_d03.md](notebook_d03.md) | MATLAB source, Simulink comparison model, plot, MAT result, and engineering notebook |
+| 4 | Laplace transforms and the double integrator | **Next** | To be created after the lesson | Companion source is present |
 | 5 | Equivalent Simulink representations | Not started | To be created after the lesson | Companion source and Simulink comparison model are present |
 | 6 | States, matrices, and initial motion | Not started | To be created after the lesson | Companion source is present |
 | 7 | Independent vertical-plant experiment | Not started | To be created after the lesson | Companion source and helper functions are present |
