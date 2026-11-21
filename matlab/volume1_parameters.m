@@ -1,15 +1,30 @@
 function p = volume1_parameters()
 % Baseline values for the IDEAL vertical model, not a measured aircraft.
-p.m = 2;                 % kg
-p.g = 9.81;              % m/s^2, positive magnitude
-p.z0 = 0;                % m, relative to the chosen altitude datum
-p.v0 = 0;                % m/s, upward positive
-p.U = 0.4;               % N, thrust increment
-p.step_time = 1;         % s
-p.stop_time = 6;         % s
-p.dt = 0.01;             % s, OUTPUT grid, not controller sample time
-p.rel_tol = 1e-8;
-p.abs_tol = 1e-10;       % solver absolute tolerance on numerical states
-p.max_step = 0.01;       % s, internal step upper bound
-end
 
+    % 1. Physical Parameters
+    p.m = 2;                 % kg, constant vehicle mass
+    p.g = 9.81;              % m/s^2, positive gravitational magnitude
+    p.T0 = p.m * p.g;        % N, hover operating thrust (19.62 N)
+    p.U = 0.4;               % N, thrust increment about hover
+    p.T_total = p.T0 + p.U;  % N, total thrust (20.02 N)
+
+    % 2. Initial Conditions
+    p.z0 = 0;                % m, initial altitude relative to hover datum
+    p.v0 = 0;                % m/s, initial vertical velocity
+
+    % 3. Simulation & Solver Settings
+    p.step_time = 1;         % s, event switch time
+    p.stop_time = 6;         % s, total simulation horizon
+    p.dt = 0.01;             % s, output grid spacing
+    p.max_step = 0.01;       % s, internal solver step upper bound
+    p.rel_tol = 1e-8;        % relative solver tolerance
+    p.abs_tol = 1e-10;       % absolute solver tolerance
+
+    % 4. AUTOMATIC EXPORT TO BASE WORKSPACE (FOR SIMULINK)
+    % This unpacks every field of 'p' directly into the base workspace
+    % so Simulink blocks can use simple names like 'm', 'U', 'z0', etc.
+    fields = fieldnames(p);
+    for k = 1:numel(fields)
+        assignin('base', fields{k}, p.(fields{k}));
+    end
+end

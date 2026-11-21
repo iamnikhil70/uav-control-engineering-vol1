@@ -3,6 +3,7 @@ p = volume1_parameters();
 t = (0:p.dt:4)';
 x0 = [p.z0;p.v0];
 T0 = p.m*p.g;
+T_total=T0+p.U;
 f_delta = @(time,x) [x(2);p.U/p.m];
 f_total = @(time,x) [x(2);((T0+p.U)-p.m*p.g)/p.m];
 opts = odeset('RelTol',p.rel_tol,'AbsTol',p.abs_tol);
@@ -28,4 +29,3 @@ legend('Exact','ODE','Location','best');
 print(gcf,fullfile(figure_dir,'day03_ode.png'),'-dpng','-r180');
 save(fullfile(result_dir,'day03.mat'),'t','xd','xt','z_exact', ...
     'v_exact','err_z','err_v','err_forms','p');
-
