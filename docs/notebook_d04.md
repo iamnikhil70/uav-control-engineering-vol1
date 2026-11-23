@@ -77,7 +77,7 @@ There are no finite zeros because the numerator is a nonzero constant.
 
 The two poles at the origin represent the two integrations in the plant. There is no restoring-force term (such as spring stiffness) and no damping term in this ideal model.
 
-The plant is **not BIBO stable**: a bounded constant force step produces an unbounded quadratic position response. In the pole-location sense, poles on the imaginary axis are marginal rather than asymptotically stable; the repeated pole at the origin does not satisfy the simple-pole condition for marginal stability. It is therefore important to state the stability concept precisely: this open-loop double integrator is not BIBO stable and is not asymptotically stable. This is expected for an unregulated position plant and does not, by itself, determine the stability of a future closed-loop controller.
+The plant is **not BIBO stable**: a bounded constant force step produces an unbounded quadratic position response. It is also not asymptotically stable. In the pole-location sense, the repeated pole at the origin is not marginally stable under the usual continuous-time LTI definition, which requires simple poles on the imaginary axis. State the stability concept precisely rather than calling the plant simply unstable. This is expected for an unregulated position plant and does not, by itself, determine the stability of a future closed-loop controller.
 
 ## 3. Parameters and assumptions
 
@@ -148,7 +148,7 @@ and:
 
 For \(m=2\) kg, this is \(z(t)=0.5t\). At 6 s the ideal response is 3 m.
 
-The physical interpretation is important: an ideal force impulse produces an instantaneous change in velocity, after which the position changes linearly if no further thrust increment is applied. The impulse is an analytical test signal, not a realistic motor command. A real actuator has finite bandwidth and cannot generate an infinitely short, infinitely large force pulse.
+The physical interpretation is important: an ideal force impulse produces an instantaneous change in velocity, after which the position changes linearly if no further thrust increment is applied. The impulse causes an instantaneous velocity jump \\(\\Delta v=J/m=0.5\\) m/s for this 1 N·s, 2 kg case; position remains continuous at the impulse instant. The impulse is an analytical test signal, not a realistic motor command. A real actuator has finite bandwidth and cannot generate an infinitely short, infinitely large force pulse.
 
 The script calculates this response as `J*impulse(G,t)` with `J=1` N·s.
 
@@ -209,13 +209,13 @@ The use of zero-order hold for the discontinuous delayed-step input is appropria
 The mathematical interpretation is consistent:
 
 - The transfer function \(1/(ms^2)\) follows directly from the Day 3 deviation-form equation under zero initial conditions.
-- The double pole at the origin is expected for an ideal position plant with two integrations.
+- The double pole at the origin is expected for an ideal position plant with two integrations. Classical settling-time and percentage-overshoot metrics (such as `stepinfo`) are not meaningful for this open-loop response because it has no finite steady-state value.
 - A constant step in thrust increment gives a parabolic altitude response.
 - An ideal impulse in thrust increment changes velocity instantaneously and gives a linear altitude response afterward.
 - Delaying the 0.4 N step by one second shifts the start of the parabolic response by one second.
 - The analytical delayed-step expression is an independent check of the `lsim` result.
 
-The repository contains the generated plot and saved MAT result. The learner reports that the delayed-step assertion passed. The exact maximum residual was not recorded in the available notes, so this notebook records the assertion threshold rather than inventing a measured residual.
+The repository contains the generated plot and saved MAT result. The learner reports that the delayed-step assertion passed and that the Simulink timeseries comparison produced a maximum absolute residual of \\(8.6153\\times10^{-14}\\) m.
 
 ### Simulink model and observed result
 
