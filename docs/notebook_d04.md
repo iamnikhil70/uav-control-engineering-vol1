@@ -43,6 +43,20 @@ For the illustrative mass \(m=2\) kg:
 
 This is a double integrator: thrust increment produces acceleration, integrating acceleration gives velocity, and integrating velocity gives altitude.
 
+### Physical units
+
+Since the input is force and the output is displacement:
+
+\\[
+[G(s)]=\\frac{\\mathrm{m}}{\\mathrm{N}}
+=\\frac{\\mathrm{m}}{\\mathrm{kg}\\,\\mathrm{m}/\\mathrm{s}^2}
+=\\frac{\\mathrm{s}^2}{\\mathrm{kg}}
+\\]
+
+This agrees with the units of \\(1/(ms^2)\\): mass contributes \\(\\mathrm{kg}\\) and the Laplace variable squared contributes \\(\\mathrm{s}^{-2}\\), so the reciprocal has units \\(\\mathrm{s}^2/\\mathrm{kg}\\), equivalent to m/N.
+
+**Meaning of zero initial conditions:** in these perturbation coordinates, \\(z_0=0\\) means zero altitude deviation from the chosen hover equilibrium datum, not ground level. Likewise, \\(v_0=0\\) means zero vertical velocity relative to that equilibrium. The vehicle can be at a nonzero physical altitude while its perturbation coordinate is zero.
+
 **Important boundary:** this transfer function maps thrust increment (N) to altitude deviation (m). It does not map normalized motor command, PWM, throttle, or rotor speed to altitude. Those require an actuator/motor/thrust model.
 
 ## 2. Poles and zeros
@@ -61,7 +75,9 @@ p_1=p_2=0
 
 There are no finite zeros because the numerator is a nonzero constant.
 
-The two poles at the origin represent the two integrations in the plant. They also mean this open-loop plant is not asymptotically stable: a constant positive thrust increment causes altitude to grow quadratically rather than settle. This is expected for an unregulated position plant; it is not evidence of a bug and does not, by itself, determine the stability of a future closed-loop controller.
+The two poles at the origin represent the two integrations in the plant. There is no restoring-force term (such as spring stiffness) and no damping term in this ideal model.
+
+The plant is **not BIBO stable**: a bounded constant force step produces an unbounded quadratic position response. In the pole-location sense, poles on the imaginary axis are marginal rather than asymptotically stable; the repeated pole at the origin does not satisfy the simple-pole condition for marginal stability. It is therefore important to state the stability concept precisely: this open-loop double integrator is not BIBO stable and is not asymptotically stable. This is expected for an unregulated position plant and does not, by itself, determine the stability of a future closed-loop controller.
 
 ## 3. Parameters and assumptions
 
@@ -201,7 +217,13 @@ The mathematical interpretation is consistent:
 
 The repository contains the generated plot and saved MAT result. The learner reports that the delayed-step assertion passed. The exact maximum residual was not recorded in the available notes, so this notebook records the assertion threshold rather than inventing a measured residual.
 
-The Simulink file is present in the repository. Its internal block parameters and signal wiring have not been independently inspected here; therefore, this notebook records the committed model artifact without claiming an independent block-level verification.
+### Simulink model and observed result
+
+The learner reports that `day04_transfer_function.slx` uses a continuous Step block with step time 1 s and final value 0.4 N, feeding a Transfer Fcn block with numerator `[1]` and denominator `[m 0 0]`. This denominator embeds the mass in the transfer function; a separate \\(1/m\\) gain block is not required.
+
+The reported output remains at zero deviation until the step time and reaches 2.5000 m at 6 s, matching the analytical prediction. The timeseries comparison gives the residual recorded above. These Simulink block details and numerical values are learner-reported observations; they have not been independently re-extracted from the binary `.slx` file in this review.
+
+The learner also identified that, with Single simulation output enabled, simulation results are accessed through a `Simulink.SimulationOutput` object (for example, `out` or `simOut`). Generated `slprj/` build/cache files are temporary artifacts and appropriately excluded from version control by `.gitignore` when they are reproducible from the source model.
 
 ## 9. Suggested strengthening checks
 
@@ -215,7 +237,7 @@ e_{step}=\max_t\left|z_{step}(t)-\frac{t^2}{2m}\right|
 e_{impulse}=\max_t\left|z_{impulse}(t)-\frac{t}{m}\right|
 \]
 
-Also record the displayed pole vector and the maximum delayed-step residual in the notebook or saved MAT metadata. These are improvements to the evidence, not corrections to the underlying transfer-function derivation.
+Also add explicit MATLAB residual assertions for the unit-step and impulse responses, and save the maximum residual values in the MAT file. The Simulink residual is now recorded in this notebook, but it would be stronger to have the calculation and threshold assertion reproducible in a committed script. These are improvements to the evidence, not corrections to the underlying transfer-function derivation.
 
 ## 10. Conclusion and next step
 
