@@ -6,12 +6,13 @@ The workflow is: understand the physics, derive the equations, implement the mod
 
 ## Current status
 
-**Days 1, 2, and 3 are complete. Day 4 is next.**
+**Days 1, 2, 3, and 4 are complete. Day 5 is next.**
 
 - [Volume 1 milestone tracker](docs/milestones.md) — the single high-level progress summary.
 - [Day 1 engineering notebook](docs/notebook_d01.md) — vertical kinematics.
 - [Day 2 engineering notebook](docs/notebook_d02.md) — frames, forces, and hover.
 - [Day 3 engineering notebook](docs/notebook_d03.md) — hover equilibrium, deviation variables, numerical ODE verification, and Simulink comparison.
+- [Day 4 engineering notebook](docs/notebook_d04.md) — Laplace-domain transfer function, poles, and step/impulse responses.
 
 The daily notebooks are the authoritative records of what was studied, implemented, observed, and verified. The presence of companion scripts for later days does not mean those lessons are complete.
 
@@ -25,6 +26,7 @@ The core physical model uses an upward-positive vertical coordinate:
 - Hover thrust: \(T_0=mg\)
 - Thrust increment: \(u=\Delta T=T-mg\)
 - Deviation-form plant: \(m\ddot z=u\)
+- Transfer function (zero initial conditions): \(G(s)=Z(s)/U(s)=1/(ms^2)\)
 
 The baseline values are illustrative: \(m=2\) kg and \(g=9.81\) m/s². They are not measurements of a physical UAV.
 
@@ -99,6 +101,34 @@ Committed learner evidence:
 
 The learner reports that the MATLAB assertions comparing the ODE solutions with the analytical solution and with each other passed at a threshold of \(10^{-7}\). In the Simulink comparison, a difference of approximately \(2.4\times10^{-15}\) m was observed on the Scope and interpreted as floating-point roundoff. See the Day 3 notebook for the verification method, observations, and limitations.
 
+### Day 4 — Laplace domain and the double-integrator transfer function
+
+Starting from \(m\ddot z=u\), the zero-initial-condition Laplace transform gives:
+
+\[
+\boxed{G(s)=\frac{Z(s)}{U(s)}=\frac{1}{ms^2}}
+\]
+
+For the illustrative mass of 2 kg, \(G(s)=1/(2s^2)\). The plant has two poles at the origin and no finite zeros. This is the expected open-loop double-integrator behavior: a constant thrust increment produces constant acceleration and a quadratic altitude response.
+
+The MATLAB exercise compares:
+
+- Unit-step response: \(z(t)=t^2/(2m)\).
+- Unit-area impulse response: \(z(t)=t/m\).
+- A 0.4 N thrust increment switched on at 1 s: \(z(t)=\frac{0.4}{2m}\max(t-1,0)^2\).
+
+The delayed-step simulation uses zero-order hold and includes an assertion comparing the simulated output with its analytical expression. The learner reports that the assertion passed. The exact maximum residual was not recorded in the available notes, so the notebook documents the assertion threshold rather than an invented numerical result.
+
+Committed learner evidence:
+
+- MATLAB source: [matlab/day04_transfer_function.m](matlab/day04_transfer_function.m)
+- Simulink model: [simulink/day04_transfer_function.slx](simulink/day04_transfer_function.slx)
+- Plot: [figures/student/day04_tf.png](figures/student/day04_tf.png)
+- Data: [results/day04.mat](results/day04.mat)
+- Notebook: [docs/notebook_d04.md](docs/notebook_d04.md)
+
+The transfer function maps thrust increment in newtons to altitude deviation in metres. It is not a throttle-to-altitude model and does not include actuator dynamics.
+
 ## Start MATLAB
 
 1. Set MATLAB's Current Folder to the repository root.
@@ -111,6 +141,7 @@ The learner reports that the MATLAB assertions comparing the ODE solutions with 
        day01_kinematics
        day02_forces
        day03_ode
+       day04_transfer_function
 
 The startup script adds the matlab and simulink folders to the MATLAB path, creates the student figure and result folders if needed, and prints the MATLAB release and installed products. Record the exact release and relevant toolbox versions in each notebook.
 
@@ -143,7 +174,8 @@ The repository also contains simulink/v1_equivalent.slx and simulink/v1_weekly.s
 - Total thrust \(T\) is measured in newtons and acts upward.
 - Hover thrust is \(T_0=mg\).
 - The signed thrust increment is \(u=T-mg\), so the ideal vertical plant is \(m\ddot z=u\).
-- The deviation-model input is a force in newtons, not normalized throttle or rotor speed.
+- The transfer-function input is thrust increment in N; the output is altitude deviation in m.
+- The transfer-function derivation assumes zero initial conditions. Nonzero initial conditions must be represented separately in a state-space or initial-condition formulation.
 
 Keep total thrust and thrust increment distinct.
 
