@@ -117,7 +117,7 @@ The MATLAB exercise compares:
 - Unit-area impulse response: \(z(t)=t/m\).
 - A 0.4 N thrust increment switched on at 1 s: \(z(t)=\frac{0.4}{2m}\max(t-1,0)^2\).
 
-The delayed-step simulation uses zero-order hold and includes an assertion comparing the simulated output with its analytical expression. The learner reports that the assertion passed. The exact maximum residual was not recorded in the available notes, so the notebook documents the assertion threshold rather than an invented numerical result.
+The delayed-step simulation uses zero-order hold and includes an assertion comparing the simulated output with its analytical expression. The learner reports that the assertion passed. A separate Simulink timeseries comparison reportedly produced a maximum absolute residual of \\(8.6153\\times10^{-14}\\) m, below the \\(10^{-7}\\) m acceptance threshold. This is a roundoff-scale residual, not machine epsilon itself. The detailed observations and the distinction between learner-reported and independently re-extracted results are recorded in the Day 4 notebook.
 
 Committed learner evidence:
 
