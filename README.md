@@ -6,13 +6,14 @@ The workflow is: understand the physics, derive the equations, implement the mod
 
 ## Current status
 
-**Days 1, 2, 3, and 4 are complete. Day 5 is next.**
+**Days 1–5 are complete. Day 6 is next.**
 
 - [Volume 1 milestone tracker](docs/milestones.md) — the single high-level progress summary.
 - [Day 1 engineering notebook](docs/notebook_d01.md) — vertical kinematics.
 - [Day 2 engineering notebook](docs/notebook_d02.md) — frames, forces, and hover.
 - [Day 3 engineering notebook](docs/notebook_d03.md) — hover equilibrium, deviation variables, numerical ODE verification, and Simulink comparison.
 - [Day 4 engineering notebook](docs/notebook_d04.md) — Laplace-domain transfer function, poles, and step/impulse responses.
+- [Day 5 engineering notebook](docs/notebook_d05.md) — quantitative equivalence of integrator, transfer-function, and continuous state-space representations.
 
 The daily notebooks are the authoritative records of what was studied, implemented, observed, and verified. The presence of companion scripts for later days does not mean those lessons are complete.
 
@@ -129,6 +130,30 @@ Committed learner evidence:
 
 The transfer function maps thrust increment in newtons to altitude deviation in metres. It is not a throttle-to-altitude model and does not include actuator dynamics.
 
+### Day 5 — quantitative equivalence of three plant representations
+
+Day 5 implements the same ideal vertical plant in three parallel Simulink branches: cascaded integrators, a Transfer Fcn block, and a continuous State-Space block. All branches receive the same 0.4 N thrust increment at 1 s, with zero initial altitude deviation and velocity. The analytical reference is:
+
+\[
+z_{exact}(t)=\frac{U}{2m}\max(t-t_s,0)^2
+=0.1\max(t-1,0)^2\;\mathrm{m}
+\]
+
+The MATLAB script interpolates the Transfer Fcn and State-Space outputs onto the integrator branch time grid, calculates maximum absolute residuals against the analytical reference, and asserts that each residual is below \(10^{-5}\) m. The learner reports all three residuals as \(3.9968\times10^{-15}\) m. These are sampled common-grid results, consistent with roundoff for this run; they are not a formal proof of equality at every continuous instant.
+
+A useful diagnostic lesson was identifying a Discrete State-Space block where the continuous State-Space block was intended. Continuous-time \(A,B\) matrices should not be copied into a discrete model without discretization for a specified sample time and input-hold assumption.
+
+Committed learner evidence:
+
+- MATLAB source: [matlab/day05_compare_models.m](matlab/day05_compare_models.m)
+- Simulink model: [simulink/v1_equivalent.slx](simulink/v1_equivalent.slx)
+- Additional Day 5 model: [simulink/day05_compare_models.slx](simulink/day05_compare_models.slx)
+- Plot: [figures/student/day05_equivalence.png](figures/student/day05_equivalence.png)
+- Data: [results/day05.mat](results/day05.mat)
+- Notebook: [docs/notebook_d05.md](docs/notebook_d05.md)
+
+The numerical values and the diagnostic observations are learner-reported; they have not been independently reproduced in MATLAB/Simulink during this review.
+
 ## Start MATLAB
 
 1. Set MATLAB's Current Folder to the repository root.
@@ -142,6 +167,7 @@ The transfer function maps thrust increment in newtons to altitude deviation in 
        day02_forces
        day03_ode
        day04_transfer_function
+       day05_compare_models
 
 The startup script adds the matlab and simulink folders to the MATLAB path, creates the student figure and result folders if needed, and prints the MATLAB release and installed products. Record the exact release and relevant toolbox versions in each notebook.
 
