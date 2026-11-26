@@ -6,7 +6,7 @@ The workflow is: understand the physics, derive the equations, implement the mod
 
 ## Current status
 
-**Days 1–5 are complete. Day 6 is next.**
+**Days 1–6 are complete. Day 7 is next.**
 
 - [Volume 1 milestone tracker](docs/milestones.md) — the single high-level progress summary.
 - [Day 1 engineering notebook](docs/notebook_d01.md) — vertical kinematics.
@@ -14,6 +14,7 @@ The workflow is: understand the physics, derive the equations, implement the mod
 - [Day 3 engineering notebook](docs/notebook_d03.md) — hover equilibrium, deviation variables, numerical ODE verification, and Simulink comparison.
 - [Day 4 engineering notebook](docs/notebook_d04.md) — Laplace-domain transfer function, poles, and step/impulse responses.
 - [Day 5 engineering notebook](docs/notebook_d05.md) — quantitative equivalence of integrator, transfer-function, and continuous state-space representations.
+- [Day 6 engineering notebook](docs/notebook_d06.md) — physical state coordinates, state-space matrices, and nonzero initial motion.
 
 The daily notebooks are the authoritative records of what was studied, implemented, observed, and verified. The presence of companion scripts for later days does not mean those lessons are complete.
 
@@ -154,6 +155,34 @@ Committed learner evidence:
 
 The numerical values and the diagnostic observations are learner-reported; they have not been independently reproduced in MATLAB/Simulink during this review.
 
+### Day 6 — physical state-space coordinates and nonzero initial motion
+
+Day 6 fixes the physical state ordering as \(x=[z\;v]^T\), derives the continuous-time \(A,B,C,D\) matrices, and recovers the zero-state transfer function \(G(s)=1/(ms^2)\). It then uses the state-transition matrix to explain unforced motion from nonzero initial altitude and velocity.
+
+For \(u=0\), the state-transition matrix is:
+
+\[
+e^{At}=\begin{bmatrix}1&t\\0&1\end{bmatrix}
+\]
+
+With \(z_0=1.0\) m and \(v_0=0.3\) m/s, the analytical free response is \(z(t)=1.0+0.3t\) m and \(v(t)=0.3\) m/s. The learner reports a 2.2 m altitude at 4 s and constant 0.3 m/s velocity, with position residual below \(10^{-7}\) m.
+
+The notebook also derives the initial-condition terms omitted by the zero-state transfer function:
+
+\[
+Z(s)=\frac{U(s)}{ms^2}+\frac{z_0}{s}+\frac{v_0}{s^2}
+\]
+
+Committed learner evidence:
+
+- MATLAB source: [matlab/day06_state_space.m](matlab/day06_state_space.m)
+- Simulink model: [simulink/day06_initial_state.slx](simulink/day06_initial_state.slx)
+- Plot: [figures/day06_states.png](figures/day06_states.png)
+- Data: [results/day06.mat](results/day06.mat)
+- Notebook: [docs/notebook_d06.md](docs/notebook_d06.md)
+
+The numerical observations are learner-reported and were not independently reproduced during this documentation update.
+
 ## Start MATLAB
 
 1. Set MATLAB's Current Folder to the repository root.
@@ -168,6 +197,7 @@ The numerical values and the diagnostic observations are learner-reported; they 
        day03_ode
        day04_transfer_function
        day05_compare_models
+       day06_state_space
 
 The startup script adds the matlab and simulink folders to the MATLAB path, creates the student figure and result folders if needed, and prints the MATLAB release and installed products. Record the exact release and relevant toolbox versions in each notebook.
 
